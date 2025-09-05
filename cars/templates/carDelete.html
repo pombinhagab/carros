@@ -1,0 +1,219 @@
+{% extends "base.html" %}
+
+{% block title %}Excluir {{ object.brandCar }} {{ object.modelCar }} - TesteDaSilva Multimarcas{% endblock %}
+
+{% block content %}
+
+<style>
+  .delete-container {
+    max-width: 600px;
+    margin: 0 auto;
+    background: var(--white);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-xl);
+    border: 1px solid var(--neutral-200);
+    overflow: hidden;
+  }
+
+  .delete-header {
+    background: linear-gradient(135deg, var(--secondary-600), var(--secondary-500));
+    color: var(--white);
+    padding: 2rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .delete-header::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -50%;
+    width: 100%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .delete-header h1 {
+    font-size: 1.75rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+  }
+
+  .delete-header p {
+    opacity: 0.9;
+    font-size: 1rem;
+    position: relative;
+    z-index: 1;
+  }
+
+  .delete-body {
+    padding: 2rem;
+  }
+
+  .delete-warning {
+    background: var(--secondary-50);
+    border: 1px solid var(--secondary-200);
+    border-radius: var(--radius-lg);
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .delete-warning-icon {
+    color: var(--secondary-500);
+    font-size: 1.5rem;
+    margin-top: 0.125rem;
+  }
+
+  .delete-warning-content h3 {
+    color: var(--secondary-700);
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+  }
+
+  .delete-warning-content p {
+    color: var(--secondary-600);
+    line-height: 1.6;
+  }
+
+  .car-info-box {
+    background: var(--neutral-50);
+    border: 1px solid var(--neutral-200);
+    border-radius: var(--radius-lg);
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+  }
+
+  .car-info-title {
+    font-weight: 600;
+    color: var(--neutral-800);
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .car-info-details {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 0.75rem 1.5rem;
+    align-items: center;
+  }
+
+  .car-info-label {
+    font-weight: 500;
+    color: var(--neutral-600);
+    font-size: 0.95rem;
+  }
+
+  .car-info-value {
+    color: var(--neutral-800);
+    font-weight: 500;
+  }
+
+  .delete-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--neutral-200);
+  }
+
+  .btn-large {
+    padding: 1rem 2rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+  }
+
+  @media (max-width: 768px) {
+    .delete-container {
+      margin: 1rem;
+    }
+    
+    .delete-header {
+      padding: 1.5rem;
+    }
+    
+    .delete-header h1 {
+      font-size: 1.5rem;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    
+    .delete-body {
+      padding: 1.5rem;
+    }
+    
+    .delete-actions {
+      flex-direction: column;
+    }
+  }
+</style>
+
+<div class="delete-container">
+  <div class="delete-header">
+    <h1>
+      <i class="fas fa-exclamation-triangle"></i>
+      Confirmar Exclusão
+    </h1>
+    <p>Esta ação não pode ser desfeita</p>
+  </div>
+
+  <div class="delete-body">
+    <div class="delete-warning">
+      <div class="delete-warning-icon">
+        <i class="fas fa-exclamation-triangle"></i>
+      </div>
+      <div class="delete-warning-content">
+        <h3>Atenção!</h3>
+        <p>Você está prestes a excluir permanentemente este veículo do sistema. Todas as informações serão perdidas e esta ação não poderá ser desfeita.</p>
+      </div>
+    </div>
+
+    <div class="car-info-box">
+      <div class="car-info-title">
+        <i class="fas fa-car"></i>
+        Veículo a ser excluído:
+      </div>
+      <div class="car-info-details">
+        <span class="car-info-label">Marca/Modelo:</span>
+        <span class="car-info-value">{{ object.brandCar }} {{ object.modelCar }}</span>
+        
+        <span class="car-info-label">Ano:</span>
+        <span class="car-info-value">{{ object.factoryYear }}</span>
+        
+        <span class="car-info-label">Placa:</span>
+        <span class="car-info-value">{{ object.plateCar }}</span>
+        
+        <span class="car-info-label">Preço:</span>
+        <span class="car-info-value">R$ {{ object.valueCar|floatformat:2 }}</span>
+      </div>
+    </div>
+
+    <form method="post">
+      {% csrf_token %}
+      <div class="delete-actions">
+        <button type="submit" class="btn btn-danger btn-large">
+          <i class="fas fa-trash"></i>
+          Confirmar Exclusão
+        </button>
+        <a href="{% url 'car_detail' pk=object.pk %}" class="btn btn-secondary btn-large">
+          <i class="fas fa-arrow-left"></i>
+          Cancelar
+        </a>
+      </div>
+    </form>
+  </div>
+</div>
+
+{% endblock %}

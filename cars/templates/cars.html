@@ -1,0 +1,476 @@
+{% extends "base.html" %}
+
+{% block title %}Carros Disponíveis - TesteDaSilva Multimarcas{% endblock %}
+
+{% block content %}
+{% load static %}
+
+<style>
+  /* Search Section */
+  .search-section {
+    background: linear-gradient(135deg, var(--primary-50) 0%, var(--white) 100%);
+    border-radius: var(--radius-xl);
+    padding: 2rem;
+    margin-bottom: 3rem;
+    border: 1px solid var(--neutral-200);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .search-section::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -50%;
+    width: 100%;
+    height: 200%;
+    background: radial-gradient(circle, var(--primary-100) 0%, transparent 70%);
+    opacity: 0.5;
+    pointer-events: none;
+  }
+
+  .search-container {
+    position: relative;
+    z-index: 1;
+  }
+
+  .search-title {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--neutral-800);
+    text-align: center;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+  }
+
+  .search-subtitle {
+    text-align: center;
+    color: var(--neutral-600);
+    margin-bottom: 2rem;
+    font-size: 1.1rem;
+  }
+
+  .search-form {
+    display: flex;
+    gap: 1rem;
+    max-width: 600px;
+    margin: 0 auto;
+    align-items: stretch;
+  }
+
+  .search-input-container {
+    flex: 1;
+    position: relative;
+  }
+
+  .search-input {
+    width: 100%;
+    padding: 1rem 1rem 1rem 3rem;
+    font-size: 1.1rem;
+    border: 2px solid var(--neutral-200);
+    border-radius: var(--radius-lg);
+    background: var(--white);
+    color: var(--neutral-800);
+    transition: all 0.2s ease;
+    box-shadow: var(--shadow-sm);
+  }
+
+  .search-input:focus {
+    outline: none;
+    border-color: var(--primary-500);
+    box-shadow: 0 0 0 4px var(--primary-50), var(--shadow-md);
+  }
+
+  .search-icon {
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--neutral-400);
+    font-size: 1.1rem;
+  }
+
+  .search-btn {
+    padding: 1rem 2rem;
+    background: linear-gradient(135deg, var(--primary-600), var(--primary-500));
+    color: var(--white);
+    border: none;
+    border-radius: var(--radius-lg);
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: var(--shadow-md);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .search-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s ease;
+  }
+
+  .search-btn:hover {
+    background: linear-gradient(135deg, var(--primary-700), var(--primary-600));
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+  }
+
+  .search-btn:hover::before {
+    left: 100%;
+  }
+
+  .search-btn:active {
+    transform: translateY(0);
+  }
+
+  /* Results Header */
+  .results-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+    background: var(--white);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--neutral-200);
+  }
+
+  .results-count {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--neutral-800);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .results-count i {
+    color: var(--primary-500);
+  }
+
+  /* Car Grid */
+  .car-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+    gap: 2rem;
+    margin-bottom: 3rem;
+  }
+
+  /* Car Card */
+  .car-card {
+    background: var(--white);
+    border-radius: var(--radius-xl);
+    overflow: hidden;
+    box-shadow: var(--shadow-md);
+    border: 1px solid var(--neutral-200);
+    transition: all 0.3s ease;
+    position: relative;
+    text-decoration: none;
+    color: inherit;
+    display: block;
+  }
+
+  .car-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, var(--primary-600) 0%, var(--primary-500) 100%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    z-index: 1;
+  }
+
+  .car-card:hover {
+    transform: translateY(-8px);
+    box-shadow: var(--shadow-xl);
+    border-color: var(--primary-300);
+  }
+
+  .car-card:hover::before {
+    opacity: 0.05;
+  }
+
+  .car-image-container {
+    position: relative;
+    height: 240px;
+    overflow: hidden;
+    background: var(--neutral-100);
+  }
+
+  .car-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+  }
+
+  .car-card:hover .car-image {
+    transform: scale(1.05);
+  }
+
+  .car-badge {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: linear-gradient(135deg, var(--success-600), var(--success-500));
+    color: var(--white);
+    padding: 0.5rem 1rem;
+    border-radius: var(--radius-lg);
+    font-size: 0.85rem;
+    font-weight: 600;
+    box-shadow: var(--shadow-md);
+    z-index: 2;
+  }
+
+  .no-image {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    color: var(--neutral-500);
+    background: linear-gradient(135deg, var(--neutral-100), var(--neutral-50));
+  }
+
+  .no-image i {
+    font-size: 3rem;
+    margin-bottom: 0.5rem;
+    color: var(--neutral-400);
+  }
+
+  /* Car Info */
+  .car-info {
+    padding: 1.5rem;
+    position: relative;
+    z-index: 2;
+  }
+
+  .car-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--neutral-800);
+    margin-bottom: 0.5rem;
+    line-height: 1.4;
+  }
+
+  .car-year {
+    font-size: 0.95rem;
+    color: var(--neutral-600);
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .car-year i {
+    color: var(--primary-500);
+  }
+
+  .car-price {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--primary-600);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .car-price i {
+    color: var(--success-500);
+  }
+
+  /* No Results */
+  .no-results {
+    text-align: center;
+    padding: 4rem 2rem;
+    background: var(--white);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-md);
+    border: 1px solid var(--neutral-200);
+  }
+
+  .no-results-icon {
+    font-size: 4rem;
+    color: var(--neutral-400);
+    margin-bottom: 1rem;
+  }
+
+  .no-results h3 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--neutral-700);
+    margin-bottom: 0.5rem;
+  }
+
+  .no-results p {
+    color: var(--neutral-600);
+    font-size: 1.1rem;
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .search-section {
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+    }
+    
+    .search-title {
+      font-size: 1.5rem;
+    }
+    
+    .search-form {
+      flex-direction: column;
+      gap: 1rem;
+    }
+    
+    .search-btn {
+      width: 100%;
+      justify-content: center;
+    }
+    
+    .car-grid {
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+    
+    .results-header {
+      flex-direction: column;
+      gap: 1rem;
+      text-align: center;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .car-grid {
+      grid-template-columns: 1fr;
+    }
+    
+    .search-section {
+      padding: 1rem;
+    }
+  }
+
+  /* Animation for card entry */
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .car-card {
+    animation: fadeInUp 0.6s ease forwards;
+  }
+
+  .car-card:nth-child(2) { animation-delay: 0.1s; }
+  .car-card:nth-child(3) { animation-delay: 0.2s; }
+  .car-card:nth-child(4) { animation-delay: 0.3s; }
+  .car-card:nth-child(5) { animation-delay: 0.4s; }
+  .car-card:nth-child(6) { animation-delay: 0.5s; }
+</style>
+
+<!-- Search Section -->
+<div class="search-section">
+  <div class="search-container">
+    <h1 class="search-title">
+      <i class="fas fa-search"></i>
+      Encontre seu Carro Ideal
+    </h1>
+    <p class="search-subtitle">
+      Pesquise entre nossa seleção de veículos seminovos e encontre a melhor oferta
+    </p>
+    
+    <form method="GET" action="{% url 'cars_list' %}" class="search-form">
+      <div class="search-input-container">
+        <i class="fas fa-search search-icon"></i>
+        <input 
+          type="text" 
+          name="search" 
+          class="search-input"
+          placeholder="Digite a marca, modelo ou ano..."
+          value="{{ request.GET.search|default:'' }}"
+        >
+      </div>
+      <button type="submit" class="search-btn">
+        <i class="fas fa-search"></i>
+        Buscar
+      </button>
+    </form>
+  </div>
+</div>
+
+<!-- Results Header -->
+<div class="results-header">
+  <div class="results-count">
+    <i class="fas fa-car"></i>
+    {% if cars %}
+      {{ cars|length }} carro{{ cars|length|pluralize }} encontrado{{ cars|length|pluralize }}
+    {% else %}
+      Nenhum resultado encontrado
+    {% endif %}
+  </div>
+</div>
+
+<!-- Car Grid -->
+<div class="car-grid">
+  {% if cars %}
+    {% for car in cars %}
+      <a href="{% url 'car_detail' car.pk %}" class="car-card">
+        <div class="car-image-container">
+          {% if car.photo %}
+            <img src="{{ car.photo.url }}" alt="{{ car.modelCar }} - {{ car.brandCar }}" class="car-image">
+          {% else %}
+            <div class="no-image">
+              <i class="fas fa-car"></i>
+              <span>Imagem não disponível</span>
+            </div>
+          {% endif %}
+          <div class="car-badge">Disponível</div>
+        </div>
+        
+        <div class="car-info">
+          <h2 class="car-title">{{ car.brandCar }} {{ car.modelCar }}</h2>
+          <div class="car-year">
+            <i class="fas fa-calendar-alt"></i>
+            {{ car.factoryYear }}
+          </div>
+          <div class="car-price">
+            <i class="fas fa-tag"></i>
+            R$ {{ car.valueCar|floatformat:2 }}
+          </div>
+        </div>
+      </a>
+    {% endfor %}
+  {% else %}
+    <div class="no-results">
+      <div class="no-results-icon">
+        <i class="fas fa-search"></i>
+      </div>
+      <h3>Nenhum carro encontrado</h3>
+      <p>Tente ajustar seus filtros de busca ou explore nossa seleção completa</p>
+    </div>
+  {% endif %}
+</div>
+
+{% endblock %}

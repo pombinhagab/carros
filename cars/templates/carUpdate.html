@@ -1,0 +1,250 @@
+{% extends "base.html" %}
+
+{% block title %}Editar {{ object.brandCar }} {{ object.modelCar }} - TesteDaSilva Multimarcas{% endblock %}
+
+{% block content %}
+
+<style>
+  /* Form Container */
+  .form-container {
+    max-width: 800px;
+    margin: 0 auto;
+    background: var(--white);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-lg);
+    border: 1px solid var(--neutral-200);
+    overflow: hidden;
+  }
+
+  .form-header {
+    background: linear-gradient(135deg, var(--primary-600), var(--primary-500));
+    color: var(--white);
+    padding: 2rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .form-header::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -50%;
+    width: 100%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .form-header h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+  }
+
+  .form-header p {
+    opacity: 0.9;
+    font-size: 1.1rem;
+    position: relative;
+    z-index: 1;
+  }
+
+  .form-body {
+    padding: 2rem;
+  }
+
+  /* Error Styling */
+  .form-errors {
+    background: var(--secondary-50);
+    border: 1px solid var(--secondary-200);
+    border-radius: var(--radius-lg);
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .form-errors ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .form-errors li {
+    color: var(--secondary-600);
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .form-errors li:last-child {
+    margin-bottom: 0;
+  }
+
+  .form-errors i {
+    color: var(--secondary-500);
+  }
+
+  /* Button Container */
+  .form-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--neutral-200);
+  }
+
+  .btn-large {
+    padding: 1rem 2rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+  }
+
+  /* Django table styling override */
+  table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+  }
+
+  table th,
+  table td {
+    padding: 0;
+    border: none;
+    background: none;
+    text-align: left;
+    vertical-align: top;
+  }
+
+  table th {
+    width: 150px;
+    padding-right: 1rem;
+  }
+
+  table input,
+  table select,
+  table textarea {
+    width: 100%;
+    padding: 1rem;
+    border: 2px solid var(--neutral-200);
+    border-radius: var(--radius-lg);
+    font-size: 1rem;
+    color: var(--neutral-800);
+    background: var(--white);
+    transition: all 0.2s ease;
+    font-family: inherit;
+  }
+
+  table input:focus,
+  table select:focus,
+  table textarea:focus {
+    outline: none;
+    border-color: var(--primary-500);
+    box-shadow: 0 0 0 4px var(--primary-50);
+  }
+
+  table textarea {
+    min-height: 120px;
+    resize: vertical;
+  }
+
+  table tr {
+    margin-bottom: 1.5rem;
+    display: block;
+  }
+
+  table th,
+  table td {
+    display: block;
+    width: 100%;
+  }
+
+  table th {
+    font-weight: 600;
+    color: var(--neutral-800);
+    margin-bottom: 0.5rem;
+    width: 100%;
+    padding-right: 0;
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .form-container {
+      margin: 1rem;
+    }
+    
+    .form-header {
+      padding: 1.5rem;
+    }
+    
+    .form-header h1 {
+      font-size: 1.75rem;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    
+    .form-body {
+      padding: 1.5rem;
+    }
+    
+    .form-actions {
+      flex-direction: column;
+    }
+  }
+</style>
+
+<div class="form-container">
+  <div class="form-header">
+    <h1>
+      <i class="fas fa-edit"></i>
+      Editar Veículo
+    </h1>
+    <p>{{ object.brandCar }} {{ object.modelCar }} - {{ object.factoryYear }}</p>
+  </div>
+
+  <div class="form-body">
+    <form method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+      
+      {% if form.errors %}
+        <div class="form-errors">
+          <ul>
+            {% for field in form %}
+              {% for error in field.errors %}
+                <li>
+                  <i class="fas fa-exclamation-circle"></i>
+                  {{ field.label }}: {{ error }}
+                </li>
+              {% endfor %}
+            {% endfor %}
+          </ul>
+        </div>
+      {% endif %}
+
+      <table>
+        {{ form.as_table }}
+      </table>
+
+      <div class="form-actions">
+        <input type="submit" value="Salvar Alterações" class="btn btn-primary btn-large">
+        <a href="{% url 'car_delete' pk=object.pk %}" class="btn btn-danger btn-large">
+          <i class="fas fa-trash"></i>
+          Excluir
+        </a>
+        <a href="{% url 'car_detail' pk=object.pk %}" class="btn btn-secondary btn-large">
+          <i class="fas fa-arrow-left"></i>
+          Cancelar
+        </a>
+      </div>
+    </form>
+  </div>
+</div>
+
+{% endblock %}

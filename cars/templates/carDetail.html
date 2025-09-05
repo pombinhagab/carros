@@ -1,0 +1,609 @@
+{% extends "base.html" %}
+
+{% block title %}{{ object.brandCar }} {{ object.modelCar }} - TesteDaSilva Multimarcas{% endblock %}
+
+{% block content %}
+
+<style>
+  /* Breadcrumb */
+  .breadcrumb {
+    background: var(--white);
+    padding: 1rem 1.5rem;
+    border-radius: var(--radius-lg);
+    margin-bottom: 2rem;
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--neutral-200);
+  }
+
+  .breadcrumb-list {
+    list-style: none;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0;
+    padding: 0;
+  }
+
+  .breadcrumb-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .breadcrumb-link {
+    color: var(--primary-600);
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.2s ease;
+  }
+
+  .breadcrumb-link:hover {
+    color: var(--primary-500);
+  }
+
+  .breadcrumb-separator {
+    color: var(--neutral-400);
+  }
+
+  .breadcrumb-current {
+    color: var(--neutral-700);
+    font-weight: 500;
+  }
+
+  /* Car Detail Layout */
+  .car-detail-container {
+    display: grid;
+    grid-template-columns: 1fr 400px;
+    gap: 2rem;
+    margin-bottom: 2rem;
+  }
+
+  /* Main Content */
+  .car-main {
+    background: var(--white);
+    border-radius: var(--radius-xl);
+    overflow: hidden;
+    box-shadow: var(--shadow-lg);
+    border: 1px solid var(--neutral-200);
+  }
+
+  .car-image-section {
+    position: relative;
+    height: 400px;
+    background: var(--neutral-100);
+    overflow: hidden;
+  }
+
+  .car-detail-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .car-status-badge {
+    position: absolute;
+    top: 1.5rem;
+    left: 1.5rem;
+    background: linear-gradient(135deg, var(--success-600), var(--success-500));
+    color: var(--white);
+    padding: 0.75rem 1.25rem;
+    border-radius: var(--radius-lg);
+    font-weight: 600;
+    box-shadow: var(--shadow-md);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .car-favorite-btn {
+    position: absolute;
+    top: 1.5rem;
+    right: 1.5rem;
+    background: rgba(255, 255, 255, 0.9);
+    border: none;
+    padding: 0.75rem;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: var(--shadow-md);
+    backdrop-filter: blur(10px);
+  }
+
+  .car-favorite-btn:hover {
+    background: var(--white);
+    transform: scale(1.1);
+  }
+
+  .car-favorite-btn i {
+    font-size: 1.25rem;
+    color: var(--secondary-500);
+  }
+
+  .no-image-detail {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    color: var(--neutral-500);
+    background: linear-gradient(135deg, var(--neutral-100), var(--neutral-50));
+  }
+
+  .no-image-detail i {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+    color: var(--neutral-400);
+  }
+
+  /* Car Info */
+  .car-info-section {
+    padding: 2rem;
+  }
+
+  .car-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--neutral-800);
+    margin-bottom: 1rem;
+    line-height: 1.2;
+  }
+
+  .car-specs-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+  }
+
+  .spec-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    background: var(--neutral-50);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--neutral-200);
+  }
+
+  .spec-icon {
+    background: var(--primary-50);
+    padding: 0.75rem;
+    border-radius: var(--radius-lg);
+    color: var(--primary-600);
+    font-size: 1.25rem;
+  }
+
+  .spec-content h4 {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--neutral-600);
+    margin-bottom: 0.25rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .spec-content p {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--neutral-800);
+  }
+
+  /* Description */
+  .car-description {
+    background: var(--neutral-50);
+    padding: 1.5rem;
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--neutral-200);
+    margin-bottom: 2rem;
+  }
+
+  .car-description h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--neutral-800);
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .car-description p {
+    color: var(--neutral-700);
+    line-height: 1.6;
+    font-size: 1.05rem;
+  }
+
+  .no-description {
+    color: var(--neutral-500);
+    font-style: italic;
+  }
+
+  /* Sidebar */
+  .car-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  /* Price Card */
+  .price-card {
+    background: linear-gradient(135deg, var(--primary-600), var(--primary-500));
+    color: var(--white);
+    padding: 2rem;
+    border-radius: var(--radius-xl);
+    text-align: center;
+    box-shadow: var(--shadow-xl);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .price-card::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -50%;
+    width: 100%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .price-label {
+    font-size: 1rem;
+    opacity: 0.9;
+    margin-bottom: 0.5rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .price-value {
+    font-size: 3rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    position: relative;
+    z-index: 1;
+  }
+
+  .price-info {
+    opacity: 0.8;
+    font-size: 0.95rem;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Contact Card */
+  .contact-card {
+    background: var(--white);
+    padding: 1.5rem;
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-md);
+    border: 1px solid var(--neutral-200);
+  }
+
+  .contact-card h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--neutral-800);
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .contact-info {
+    space-y: 1rem;
+  }
+
+  .contact-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.75rem;
+    background: var(--neutral-50);
+    border-radius: var(--radius-lg);
+    margin-bottom: 0.75rem;
+  }
+
+  .contact-item i {
+    color: var(--primary-600);
+    font-size: 1.1rem;
+    width: 1.25rem;
+  }
+
+  /* Action Buttons */
+  .action-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-top: 2rem;
+  }
+
+  .btn-full {
+    width: 100%;
+    justify-content: center;
+    padding: 1rem 1.5rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+  }
+
+  .btn-contact {
+    background: linear-gradient(135deg, var(--success-600), var(--success-500));
+    color: var(--white);
+  }
+
+  .btn-contact:hover {
+    background: linear-gradient(135deg, var(--success-700), var(--success-600));
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+  }
+
+  /* Management Buttons */
+  .management-buttons {
+    background: var(--white);
+    padding: 1.5rem;
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-md);
+    border: 1px solid var(--neutral-200);
+  }
+
+  .management-buttons h3 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--neutral-800);
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .management-buttons .btn {
+    width: 100%;
+    justify-content: center;
+    margin-bottom: 0.75rem;
+  }
+
+  .management-buttons .btn:last-child {
+    margin-bottom: 0;
+  }
+
+  /* Responsive */
+  @media (max-width: 1024px) {
+    .car-detail-container {
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+    
+    .car-sidebar {
+      order: -1;
+    }
+    
+    .price-card {
+      padding: 1.5rem;
+    }
+    
+    .price-value {
+      font-size: 2.5rem;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .car-title {
+      font-size: 2rem;
+    }
+    
+    .car-specs-grid {
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+    
+    .car-image-section {
+      height: 300px;
+    }
+    
+    .action-buttons {
+      flex-direction: column;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .car-info-section {
+      padding: 1.5rem;
+    }
+    
+    .price-value {
+      font-size: 2rem;
+    }
+    
+    .breadcrumb {
+      padding: 1rem;
+    }
+  }
+</style>
+
+<!-- Breadcrumb -->
+<nav class="breadcrumb" aria-label="Breadcrumb">
+  <ol class="breadcrumb-list">
+    <li class="breadcrumb-item">
+      <a href="{% url 'cars_list' %}" class="breadcrumb-link">
+        <i class="fas fa-car"></i>
+        Carros
+      </a>
+    </li>
+    <li class="breadcrumb-item">
+      <span class="breadcrumb-separator">
+        <i class="fas fa-chevron-right"></i>
+      </span>
+    </li>
+    <li class="breadcrumb-item">
+      <span class="breadcrumb-current">{{ object.brandCar }} {{ object.modelCar }}</span>
+    </li>
+  </ol>
+</nav>
+
+<!-- Car Detail Container -->
+<div class="car-detail-container">
+  <!-- Main Content -->
+  <div class="car-main">
+    <!-- Image Section -->
+    <div class="car-image-section">
+      {% if object.photo %}
+        <img src="{{ object.photo.url }}" alt="{{ object.modelCar }} - {{ object.brandCar }}" class="car-detail-image">
+      {% else %}
+        <div class="no-image-detail">
+          <i class="fas fa-car"></i>
+          <span>Imagem não disponível</span>
+        </div>
+      {% endif %}
+      
+      <div class="car-status-badge">
+        <i class="fas fa-check-circle"></i>
+        Disponível
+      </div>
+      
+      <button class="car-favorite-btn" onclick="toggleFavorite()">
+        <i class="far fa-heart"></i>
+      </button>
+    </div>
+
+    <!-- Car Info -->
+    <div class="car-info-section">
+      <h1 class="car-title">{{ object.brandCar }} {{ object.modelCar }}</h1>
+      
+      <!-- Specs Grid -->
+      <div class="car-specs-grid">
+        <div class="spec-item">
+          <div class="spec-icon">
+            <i class="fas fa-calendar-alt"></i>
+          </div>
+          <div class="spec-content">
+            <h4>Ano de Fabricação</h4>
+            <p>{{ object.factoryYear }}</p>
+          </div>
+        </div>
+        
+        <div class="spec-item">
+          <div class="spec-icon">
+            <i class="fas fa-calendar-check"></i>
+          </div>
+          <div class="spec-content">
+            <h4>Ano do Modelo</h4>
+            <p>{{ object.modelYear }}</p>
+          </div>
+        </div>
+        
+        <div class="spec-item">
+          <div class="spec-icon">
+            <i class="fas fa-id-card"></i>
+          </div>
+          <div class="spec-content">
+            <h4>Placa</h4>
+            <p>{{ object.plateCar }}</p>
+          </div>
+        </div>
+        
+        <div class="spec-item">
+          <div class="spec-icon">
+            <i class="fas fa-tachometer-alt"></i>
+          </div>
+          <div class="spec-content">
+            <h4>Status</h4>
+            <p>Seminovo</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Description -->
+      <div class="car-description">
+        <h3>
+          <i class="fas fa-info-circle"></i>
+          Descrição
+        </h3>
+        {% if object.bioCar %}
+          <p>{{ object.bioCar }}</p>
+        {% else %}
+          <p class="no-description">Este veículo não possui descrição adicional.</p>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <!-- Sidebar -->
+  <div class="car-sidebar">
+    <!-- Price Card -->
+    <div class="price-card">
+      <div class="price-label">Preço à vista</div>
+      <div class="price-value">R$ {{ object.valueCar|floatformat:2 }}</div>
+      <div class="price-info">
+        *Preço sujeito à análise e condições de financiamento
+      </div>
+    </div>
+
+    <!-- Contact Card -->
+    <div class="contact-card">
+      <h3>
+        <i class="fas fa-headset"></i>
+        Entre em Contato
+      </h3>
+      <div class="contact-info">
+        <div class="contact-item">
+          <i class="fas fa-phone"></i>
+          <span>(11) 99999-9999</span>
+        </div>
+        <div class="contact-item">
+          <i class="fas fa-envelope"></i>
+          <span>vendas@testedasilva.com.br</span>
+        </div>
+        <div class="contact-item">
+          <i class="fas fa-clock"></i>
+          <span>Seg-Sex: 8h às 18h</span>
+        </div>
+      </div>
+
+      <div class="action-buttons">
+        <a href="tel:(11)999999999" class="btn btn-contact btn-full">
+          <i class="fas fa-phone"></i>
+          Ligar Agora
+        </a>
+        <a href="https://wa.me/5511999999999" target="_blank" class="btn btn-primary btn-full">
+          <i class="fab fa-whatsapp"></i>
+          WhatsApp
+        </a>
+      </div>
+    </div>
+
+    <!-- Management Buttons (if authenticated) -->
+    {% if user.is_authenticated %}
+      <div class="management-buttons">
+        <h3>
+          <i class="fas fa-cog"></i>
+          Gerenciar
+        </h3>
+        <a href="{% url 'car_update' pk=object.pk %}" class="btn btn-primary">
+          <i class="fas fa-edit"></i>
+          Editar Veículo
+        </a>
+        <a href="{% url 'car_delete' pk=object.pk %}" class="btn btn-danger">
+          <i class="fas fa-trash"></i>
+          Excluir Veículo
+        </a>
+      </div>
+    {% endif %}
+  </div>
+</div>
+
+<script>
+function toggleFavorite() {
+  const btn = document.querySelector('.car-favorite-btn i');
+  const isFavorited = btn.classList.contains('fas');
+  
+  if (isFavorited) {
+    btn.classList.remove('fas');
+    btn.classList.add('far');
+  } else {
+    btn.classList.remove('far');
+    btn.classList.add('fas');
+  }
+}
+</script>
+
+{% endblock %}
