@@ -547,11 +547,20 @@
       <div class="contact-info">
         <div class="contact-item">
           <i class="fas fa-phone"></i>
-          <span>(11) 99999-9999</span>
+          {% load telefone_filters %}
+          {% if object.carOwner.profile.telefone %}
+            <span>{{ object.carOwner.profile.telefone|format_telefone }}</span>
+          {% else %}
+            <span>Telefone não informado</span>
+          {% endif %}
         </div>
         <div class="contact-item">
           <i class="fas fa-envelope"></i>
-          <span>vendas@testedasilva.com.br</span>
+          {% if object.carOwner.email %}
+            <span>{{ object.carOwner.email }}</span>
+          {% else %}
+            <span>E-mail não informado</span>
+          {% endif %}
         </div>
         <div class="contact-item">
           <i class="fas fa-clock"></i>
@@ -560,14 +569,10 @@
       </div>
 
       <div class="action-buttons">
-        <a href="tel:(11)999999999" class="btn btn-contact btn-full">
-          <i class="fas fa-phone"></i>
-          Ligar Agora
-        </a>
-        <a href="https://wa.me/5511999999999" target="_blank" class="btn btn-primary btn-full">
+        <a href="https://wa.me/55{{ object.carOwner.profile.telefone|remove_chars }}" target="_blank" class="btn btn-contact btn-full">
           <i class="fab fa-whatsapp"></i>
           WhatsApp
-        </a>
+        </a>  
       </div>
     </div>
 
