@@ -507,7 +507,7 @@
           </div>
           <div class="spec-content">
             <h4>Status</h4>
-            <p>Seminovo</p>
+            <p>{{ object.get_carStatus_display }}</p>
           </div>
         </div>
       </div>
@@ -572,7 +572,7 @@
     </div>
 
     <!-- Management Buttons (if authenticated) -->
-    {% if user.is_authenticated %}
+    {% if user.is_authenticated and user == object.carOwner %}
       <div class="management-buttons">
         <h3>
           <i class="fas fa-cog"></i>

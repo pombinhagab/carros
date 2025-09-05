@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 class Brand(models.Model):
     idBrand = models.AutoField(primary_key=True)
@@ -9,6 +10,11 @@ class Brand(models.Model):
 
 
 class Car(models.Model):
+    STATUS_CHOICES = [
+        ('novo', 'Novo'),
+        ('seminovo', 'Seminovo'),
+        ('usado', 'Usado'),
+    ]
     idCar = models.AutoField(primary_key=True)
     modelCar = models.CharField(max_length=200)
     brandCar = models.ForeignKey(Brand, on_delete=models.PROTECT, related_name="carBrand")
@@ -17,6 +23,8 @@ class Car(models.Model):
     plateCar = models.CharField(max_length=10, blank=True, null=True)
     valueCar = models.FloatField(blank=True, null=True)
     photo = models.ImageField(upload_to="cars/", blank=True, null=True)
+    carOwner = models.ForeignKey(User, on_delete=models.CASCADE, related_name="ownerCar", null=True)
+    carStatus = models.CharField(max_length=10, choices=STATUS_CHOICES, default='novo')
     bioCar = models.TextField(blank=True, null=True)
 
     def __str__(self):

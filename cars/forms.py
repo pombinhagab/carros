@@ -5,7 +5,17 @@ from cars.models import Car
 class CarModelForm(forms.ModelForm):
     class Meta:
         model = Car
-        fields = "__all__"
+        exclude = ['carOwner']
+        labels = {
+            'modelCar': 'Modelo do Carro',
+            'brandCar': 'Marca do Carro',
+            'factoryYear': 'Ano de Fabricação (Acima de 1975)',
+            'modelYear': 'Ano do Modelo (Acima de 1975)',
+            'plateCar': 'Placa do Carro',
+            'valueCar': 'Valor do Carro (Minimo R$20.000)',
+            'photo': 'Foto do Carro',
+            'bioCar': 'Descrição do Carro',
+        }
 
     def clean_valueCar(self):
         valueCar = self.cleaned_data.get("valueCar")

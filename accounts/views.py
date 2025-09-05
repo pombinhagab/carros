@@ -18,14 +18,11 @@ def registerView(request):
 
 def loginView(request):
     if request.method == "POST":
-        username = request.POST["username"]
-        password = request.POST["password"]
-        user = authenticate(request, username=username, password=password)
-        if user is not None:
+        loginForm = AuthenticationForm(request, data=request.POST)
+        if loginForm.is_valid():
+            user = loginForm.get_user()
             login(request, user)
             return redirect("cars_list")
-        else:
-            loginForm = AuthenticationForm()
     else:
         loginForm = AuthenticationForm()
     return render(

@@ -7,12 +7,14 @@
 <style>
   .auth-container {
     max-width: 500px;
-    margin: 0 auto;
+    margin: 2rem auto 0 auto; /* Mudança: reduzido de 5rem para 2rem */
     background: var(--white);
     border-radius: var(--radius-xl);
     box-shadow: var(--shadow-xl);
     border: 1px solid var(--neutral-200);
     overflow: hidden;
+    position: relative;
+    z-index: 10; /* Mudança: aumentado de 1 para 10, mas menor que o header */
   }
 
   .auth-header {
@@ -130,11 +132,34 @@
   }
 
   .btn-large {
+    width: 100%;
     padding: 1rem 2rem;
     font-size: 1.1rem;
     font-weight: 600;
+    border: none;
+    border-radius: var(--radius-lg);
+    background-color: var(--primary-500);
+    color: var(--white);
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease; /* Mudança: corrigido transition */
   }
 
+  .btn-large:hover {
+    background-color: var(--primary-600);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+  }
+
+  .btn-large:focus {
+    outline: none;
+    box-shadow: 0 0 0 4px var(--primary-50);
+  }
+
+  .btn-large:active {
+    transform: translateY(0);
+    box-shadow: var(--shadow-md);
+  }
+  
   .auth-link {
     text-align: center;
     color: var(--primary-600);
@@ -150,9 +175,11 @@
     background: var(--primary-50);
   }
 
+  /* Responsividade melhorada */
   @media (max-width: 768px) {
     .auth-container {
-      margin: 1rem;
+      margin: 1rem; /* Mudança: reduzido margin para mobile */
+      margin-top: 1rem; /* Mudança: margin-top específico para mobile */
     }
     
     .auth-header {
@@ -165,6 +192,34 @@
     
     .auth-body {
       padding: 1.5rem;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .auth-container {
+      margin: 0.5rem; /* Mudança: margin ainda menor para telas muito pequenas */
+      margin-top: 0.5rem;
+    }
+    
+    .auth-header {
+      padding: 1rem;
+    }
+    
+    .auth-body {
+      padding: 1rem;
+    }
+  }
+
+  /* Mudança: Garantir que o container nunca sobreponha o header */
+  @media (min-height: 600px) {
+    .auth-container {
+      margin-top: 3rem; /* Mais espaço em telas altas */
+    }
+  }
+
+  @media (max-height: 500px) {
+    .auth-container {
+      margin-top: 1rem; /* Menos espaço em telas baixas */
     }
   }
 </style>
@@ -214,10 +269,10 @@
       </div>
 
       <div class="auth-actions">
-        <input type="submit" value="Entrar" class="btn btn-primary btn-large">
+        <input type="submit" value="Entrar" class="btn-large">
         <a href="{% url 'register' %}" class="auth-link">
           <i class="fas fa-user-plus"></i>
-          Não tem conta? Registre-se
+          Não tem uma conta? Registre-se
         </a>
       </div>
     </form>
@@ -225,3 +280,4 @@
 </div>
 
 {% endblock %}
+
