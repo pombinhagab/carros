@@ -8,7 +8,7 @@ Uma funcionalidade inovadora é a **integração com Inteligência Artificial**,
 
 ---
 
-## Tecnologias Utilizadas 🛠
+## Tecnologias Utilizadas 
 
 - **Python**: Linguagem de programação principal.  
 - **Django**: Framework web de alto nível para desenvolvimento rápido e seguro.  
