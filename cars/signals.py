@@ -10,7 +10,7 @@ def CarInventoryUpdate():
     carsCount = Car.objects.all().count() # SELECT * FROM CARS
     carsValue = Car.objects.aggregate(
         totalValue = Sum('valueCar') # {'totalValue': 100.000}
-    )['totalValue']
+    )['totalValue'] or 0
     CarInventory.objects.create(
         carsCount = carsCount,
         carsValue = carsValue,
