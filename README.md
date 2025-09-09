@@ -1,4 +1,4 @@
-# Sistema de Revenda de Carros 🚗💻
+# Sistema de Revenda de Carros 
 
 Este projeto é um **sistema de revenda de carros** desenvolvido em **Python** utilizando o framework **Django** (padrão MVT – Model-View-Template) e **PostgreSQL** como banco de dados.  
 
@@ -8,7 +8,7 @@ Uma funcionalidade inovadora é a **integração com Inteligência Artificial**,
 
 ---
 
-## Tecnologias Utilizadas 🛠️
+## Tecnologias Utilizadas 🛠
 
 - **Python**: Linguagem de programação principal.  
 - **Django**: Framework web de alto nível para desenvolvimento rápido e seguro.  
@@ -18,7 +18,7 @@ Uma funcionalidade inovadora é a **integração com Inteligência Artificial**,
 
 ---
 
-## Funcionalidades Principais ✨
+## Funcionalidades Principais 
 
 - **Adicionar Carro**: Cadastra novos veículos no sistema, incluindo marca, modelo, ano, preço e descrição. Caso a descrição não seja fornecida, a IA gera automaticamente.  
 - **Listar Carros**: Exibe uma lista completa dos veículos disponíveis no catálogo.  
