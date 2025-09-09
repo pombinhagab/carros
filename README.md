@@ -29,5 +29,5 @@ Uma funcionalidade inovadora é a **integração com Inteligência Artificial**,
 
 ---
 
-## Estrutura do Projeto 📂
-
+## Configuração do Ambiente
+**WIP**
