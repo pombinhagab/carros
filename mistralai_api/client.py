@@ -1,7 +1,7 @@
 from mistralai import Mistral
 import os
 
-api_key = 'IJFqXdtpUHzmrGQZzd1uDZ399ZT5OkOS'
+api_key = os.getenv("MISTRAL_KEY")
 model = "mistral-small-latest"
 
 def get_car_ai_bio(modelCar, brandCar, factoryYear):
