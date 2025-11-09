@@ -15,6 +15,7 @@ class CarModelForm(forms.ModelForm):
             'valueCar': 'Valor do Carro (Minimo R$20.000)',
             'photo': 'Foto do Carro',
             'bioCar': 'Descrição do Carro',
+            'carStatus': 'Status do Carro',
         }
 
     def clean_valueCar(self):
